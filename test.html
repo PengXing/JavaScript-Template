@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><!--STATUS OK-->
-<meta http-equiv="Content-Type" content="text/html;charset=gb2312">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <title>Test</title>
 <style type="text/css">
 body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
@@ -39,9 +39,9 @@ var tmpl = function(str, data){
 <script id="test">
 var tpl = {
     'html' : {
-	'tpl' : "<%=text %><%var s = '\"\n\"';%>\n<%=s%>",
+	'tpl' : "<%:u=text %><%var s = '\"\n\"';%>\n<%=s%>",
 	'data' : {
-	    'text' : 'HelloWorld!'
+	    'text' : 'HelloWorld!彭星'
 	}
     }
 };
@@ -49,10 +49,12 @@ var tpl = {
 var html = [];
 for(var str in tpl){
     var template = tpl[str];
+    /*
     var start = +new Date;
-    html.push(tmpl(template['tpl'], template['data']) + '<br />');
+    html.push(tmpl(template['tpl'], template['data']) + '<br />'); 
     var end = +new Date;
     html.push("tmpl: " + (end - start));
+    */
     start = +new Date;
     html.push(app.tpl(template['tpl'], template['data']));
     end = +new Date;
