@@ -168,7 +168,7 @@ var app = {};
 	    value = 'var ' + key + '=' + value.replace(/[\r\t\n]/g, ' ') + ';';
 	    inFns += value;
 	}
-	var fn = new Function('obj', 'var __p=[],print=function(){__p.push.apply(__p,arguments)};' + inFns + ';with(obj){' + str + '}return __p.join("")');
+	var fn = new Function('obj', 'var __p=[],print=function(){__p.push.apply(__p,arguments)};' + inFns + 'with(obj){' + str + '}return __p.join("")');
 	return data ? fn(data) : fn;
     };
 
