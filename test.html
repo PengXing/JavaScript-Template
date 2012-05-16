@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head><!--STATUS OK-->
+<meta http-equiv="Content-Type" content="text/html;charset=gb2312">
+<title>Test</title>
+<style type="text/css">
+body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
+</style>
+</head>
+<body>
+
+<script src="template.js"></script>
+
+<script>
+
+//http://ejohn.org/blog/javascript-micro-templating/
+var tmpl = function(str, data){
+    // Generate a reusable function that will serve as a template
+    // generator (and which will be cached).
+    // Convert the template into pure JavaScript
+    var s = str.replace(/[\r\t\n]/g, " ")
+    .split("<%").join("\t")
+    .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+    .replace(/\t=(.*?)%>/g, "',$1,'")
+    .split("\t").join("');")
+    .split("%>").join("__p.push('")
+    .split("\r").join("\\'")
+    + "');}return __p.join('');"
+    var fn = new Function("obj",
+	    "var __p=[],print=function(){__p.push.apply(__p,arguments);};" +
+	    // Introduce the data as local variables using with(){}
+	    "with(obj){__p.push('" + s );
+	    // Provide some basic currying to the user
+    return fn( data );
+}
+
+</script>
+
+<script id="test">
+var tpl = {
+    'html' : {
+	'tpl' : "<%=text %><%var s = '\"\n\"';%>\n<%=s%>",
+	'data' : {
+	    'text' : 'HelloWorld!'
+	}
+    }
+};
+
+var html = [];
+for(var str in tpl){
+    var template = tpl[str];
+    var start = +new Date;
+    html.push(tmpl(template['tpl'], template['data']) + '<br />');
+    var end = +new Date;
+    html.push("tmpl: " + (end - start));
+    start = +new Date;
+    html.push(app.tpl(template['tpl'], template['data']));
+    end = +new Date;
+    html.push("tpl: " + (end - start));
+
+    var div = document.createElement('div');
+    div.innerHTML = html.join('<br/>');
+    document.body.appendChild(div);
+}
+
+</script>
+
+</body>
+</html>
+
