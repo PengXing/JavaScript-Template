@@ -39,7 +39,13 @@ var tmpl = function(str, data){
 <script id="test">
 var tpl = {
     'html' : {
-	'tpl' : "<%:u=text %><%var s = 'enter\"\n\"';%>\n<%=s%><%# comment %>",
+	'tpl' : "<%:u=text %><%var s = 'enter\"\n\"'; output('baidu');%>\n<%=s%><%# comment %>",
+	'data' : {
+	    'text' : 'HelloWorld!彭星'
+	}
+    },
+    'customFunction' : {
+	'tpl' : "<% output('baidu'); %><% output(text) %>",
 	'data' : {
 	    'text' : 'HelloWorld!彭星'
 	}
@@ -56,15 +62,19 @@ for(var str in tpl){
     html.push("tmpl: " + (end - start));
     */
     start = +new Date;
-    html.push(app.tpl(template['tpl'], template['data']));
+    html.push(app.tpl(template['tpl'], template['data'], {
+	fns : {
+	    output : 'function(){__p.push.apply(__p, arguments)}'
+	}
+    }));
     end = +new Date;
     html.push("tpl: " + (end - start));
 
     var div = document.createElement('div');
     div.innerHTML = html.join('<br/>');
-    document.body.appendChild(div);
 }
 
+document.body.appendChild(div);
 </script>
 
 </body>

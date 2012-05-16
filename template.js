@@ -149,10 +149,26 @@ var app = {};
 
     }
 
-    var tpl = function(template, data){
+    /**
+     * @function 模板函数
+     * @param {string} 模板
+     * @param {object} 数据
+     * @param {object} 参数，可包含自定义函数
+     * @return {string|Function} 如果包含数据，则返回函数执行后的字符串，否则返回函数
+     */
+    var tpl = function(template, data, opt){
+	if(!opt) opt = {};
 	var parser = new Parser(template);
 	var str = parser.parse();
-	var fn = new Function('obj', 'var __p=[],print=function(){__p.push.apply(__p,arguments)};' + 'with(obj){' + str + '}return __p.join("")');
+	var inFns = '',
+	    key,
+	    value;
+	for(key in opt['fns']){
+	    value = opt['fns'][key];
+	    value = 'var ' + key + '=' + value.replace(/[\r\t\n]/g, ' ') + ';';
+	    inFns += value;
+	}
+	var fn = new Function('obj', 'var __p=[],print=function(){__p.push.apply(__p,arguments)};' + inFns + ';with(obj){' + str + '}return __p.join("")');
 	return data ? fn(data) : fn;
     };
 
