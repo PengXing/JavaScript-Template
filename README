@@ -1,16 +1,18 @@
 Feature:
-  1. support comment
+  1. 支持注释
     <%# comment %>
   
-  2. support url encode
+  2. 支持链接转义
     <%:u=href %>
-  3. support custom function
+
+  3. 支持自定义模板函数
     app.tpl(template['tpl'], template['data'], {
-      fns : {
-        output : 'function(){__p.push.apply(__p, arguments)}'
-  	  }
+	fns : {
+	    output : 'function(){__p.push.apply(__p, arguments)}'
+	}
     })
 
 TODO:
   1. HTML encode
+  	<%:h=html %>
   2. unknown
