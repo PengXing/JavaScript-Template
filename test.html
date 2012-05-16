@@ -39,7 +39,7 @@ var tmpl = function(str, data){
 <script id="test">
 var tpl = {
     'html' : {
-	'tpl' : "<%:u=text %><%var s = '\"\n\"';%>\n<%=s%>",
+	'tpl' : "<%:u=text %><%var s = 'enter\"\n\"';%>\n<%=s%><%# comment %>",
 	'data' : {
 	    'text' : 'HelloWorld!彭星'
 	}
