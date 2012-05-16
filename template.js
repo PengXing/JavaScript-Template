@@ -1,5 +1,11 @@
 var app = {};
 
+/**
+ * javascript template
+ * 
+ * @author PengXing
+ * @email px.pengxing@gmail.com
+ */
 ;(function(A){
 
     function Parser(str){
