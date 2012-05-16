@@ -1,0 +1,16 @@
+Feature:
+  1. support comment
+    <%# comment %>
+  
+  2. support url encode
+    <%:u=href %>
+  3. support custom function
+    app.tpl(template['tpl'], template['data'], {
+      fns : {
+        output : 'function(){__p.push.apply(__p, arguments)}'
+  	  }
+    })
+
+TODO:
+  1. HTML encode
+  2. unknown
