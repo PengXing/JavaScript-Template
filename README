@@ -1,11 +1,11 @@
 Feature:
-  1. 支持注释
+  1. Support comment
     <%# comment %>
   
-  2. 支持链接转义
+  2. Support encodeURIComponent
     <%:u=href %>
 
-  3. 支持自定义模板函数
+  3. Support developers custom template function
     app.tpl(template['tpl'], template['data'], {
 	fns : {
 	    output : 'function(){__p.push.apply(__p, arguments)}'
