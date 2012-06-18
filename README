@@ -12,7 +12,9 @@ Feature:
 	}
     })
 
+  4. Good performance
+
 TODO:
   1. HTML encode
   	<%:h=html %>
-  2. unknown
+  2. Optimize

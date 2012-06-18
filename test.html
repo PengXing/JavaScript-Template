@@ -11,72 +11,77 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
 
 <script src="template.js"></script>
 
+<script id="1" type="template">
+    <%:u=name %>
+    <%
+        var s = 'Enter\"\n\"';
+        print(company);
+    %>
+    <%=s %>
+    <%# This is comment %>
+</script>
+
+<script id="2" type="template">
+    <%# test custom function  %>
+    <%:u=name %>
+    <%
+        output(company);
+    %>
+</script>
+
+<script id="3" type="template">
+    <%
+        if (name === 'PengXing') {
+            print(name);
+        } else {
+            print("unknown name");
+        }
+    %>
+</script>
+
 <script>
+    var Timer = function(){
+        
+        this.start = function(){
+            this.st = new Date();
+        };
 
-//http://ejohn.org/blog/javascript-micro-templating/
-var tmpl = function(str, data){
-    // Generate a reusable function that will serve as a template
-    // generator (and which will be cached).
-    // Convert the template into pure JavaScript
-    var s = str.replace(/[\r\t\n]/g, " ")
-    .split("<%").join("\t")
-    .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-    .replace(/\t=(.*?)%>/g, "',$1,'")
-    .split("\t").join("');")
-    .split("%>").join("__p.push('")
-    .split("\r").join("\\'")
-    + "');}return __p.join('');"
-    var fn = new Function("obj",
-	    "var __p=[],print=function(){__p.push.apply(__p,arguments);};" +
-	    // Introduce the data as local variables using with(){}
-	    "with(obj){__p.push('" + s );
-	    // Provide some basic currying to the user
-    return fn( data );
-}
+        this.end = function(){
+            this.et = new Date();
+        };
 
+        this.log = function(){
+            return this.et - this.st;
+        };
+    };
 </script>
 
 <script id="test">
-var tpl = {
-    'html' : {
-	'tpl' : "<%:u=text %><%var s = 'enter\"\n\"'; output('baidu');%>\n<%=s%><%# comment %>",
-	'data' : {
-	    'text' : 'HelloWorld!彭星'
-	}
-    },
-    'customFunction' : {
-	'tpl' : "<% output('baidu'); %><% output(text) %>",
-	'data' : {
-	    'text' : 'HelloWorld!彭星'
-	}
+    var tplIds = ['1', '2', '3'];
+
+    var html = [];
+    var timer = new Timer();
+    for(var i = 0, l = tplIds.length; i < l; i++){
+        var id = tplIds[i];
+        var template = document.getElementById(id).innerHTML;
+        timer.start();
+        html.push(app.tpl(template, {
+            name: 'PengXing',
+            company: 'baidu'
+        }, {
+            fns : {
+                output : 'function(str){__s+=str}'
+            }
+        }));
+        timer.end();
+        html.push("tpl: " + timer.log());
+
+        var div = document.createElement('div');
+        div.innerHTML = html.join('<br/>');
     }
-};
 
-var html = [];
-for(var str in tpl){
-    var template = tpl[str];
-    /*
-    var start = +new Date;
-    html.push(tmpl(template['tpl'], template['data']) + '<br />'); 
-    var end = +new Date;
-    html.push("tmpl: " + (end - start));
-    */
-    start = +new Date;
-    html.push(app.tpl(template['tpl'], template['data'], {
-	fns : {
-	    output : 'function(){__p.push.apply(__p, arguments)}'
-	}
-    }));
-    end = +new Date;
-    html.push("tpl: " + (end - start));
-
-    var div = document.createElement('div');
-    div.innerHTML = html.join('<br/>');
-}
-
-document.body.appendChild(div);
+    document.body.appendChild(div);
 </script>
 
 </body>
 </html>
-
