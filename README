@@ -14,6 +14,8 @@ Feature:
 
   4. Good performance
 
+  5. Support error tips
+
 TODO:
   1. HTML encode
   	<%:h=html %>
