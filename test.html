@@ -19,14 +19,17 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
     %>
     <%=s %>
     <%# This is comment %>
+    <% /*This is comment*/ %>
 </script>
 
 <script id="2" type="template">
     <%# test custom function  %>
     <%:u=name %>
     <%
+        var str = "HelloWorld! ";
         output(company);
     %>
+    <%:u=str %>
 </script>
 
 <script id="3" type="template">
@@ -42,9 +45,16 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
 <script id="4" type="template">
     <%:h=name %>
     <%
-        var s = '<script>var xss = "";<\/script>';
+        var s = "<script>var s = 'HelloWorld!';<\/script>";
     %>
     <%:h=s %>
+</script>
+
+<script id="5" type="template">
+    <%
+        var s = "<script>var s = 'HelloWorld!';<\/script>";
+        encodeHTMLAndPrint(s);
+    %>
 </script>
 
 <script>
@@ -65,7 +75,7 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
 </script>
 
 <script id="test">
-    var tplIds = ['1', '2', '3', '4'];
+    var tplIds = ['1', '2', '3', '4', '5'];
 
     var html = [];
     var timer = new Timer();
@@ -78,7 +88,8 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
             company: 'baidu'
         }, {
             fns : {
-                output : 'function(str){__s+=str}'
+                output : 'function(str){__s+=str}',
+                encodeHTMLAndPrint : 'function(s){print(encodeHTML(s))}'
             }
         }));
         timer.end();

@@ -23,3 +23,92 @@ Feature:
 
 TODO:
   1. Optimize the compiled function without using with keyword.
+
+使用方法：
+
+    语法类似JSP，在JSP的基础上增加了一些特性，当然也去掉了很多
+
+    1. 注释
+        <%# comment %>
+    
+        <% /* comment */ %>
+
+        <% /** comment */ %>
+
+        不支持(Not support) <% //comment %>
+
+    2. 普通语句
+        <%
+            var s = 'template'; /* 代码块里是JavaScript语句 */
+            if(s == 'template'){
+        %>
+            template
+        <%
+            }
+        %>
+
+    3. 输出变量
+
+        a. 直接输出
+            <% var str = "HelloWorld!"; %>
+            <%=str %>
+
+            程序将直接输出"HelloWorld!"
+
+        b. encodeURIComponent
+            <% var str = "HelloWorld! "; %>
+            <%:u=str %>
+
+            程序将输出"HelloWorld!%20"
+
+        c. encodeHTML
+            <% var str = "<script>var s = 'HelloWorld!';<\/script>"; %>
+            <%:h=str %>
+
+            程序将输出"&lt;script&gt;var s = &#39;HelloWorld!&#39;;&lt;/script&gt;"
+
+    4. 内置模板函数
+        
+        目前内置了两个模板函数，分别是print和encodeHTML
+        a. print
+            <%
+                var s = "HelloWorld!";
+                print(s);
+            %>
+            等价于
+            <%
+                var s = "HelloWorld!";
+            %>
+            <%=s%>
+
+        b. encodeHTML
+            <%
+                var str = "<script>var s = 'HelloWorld!';<\/script>";
+                print(encodeHTML(str));
+            %>
+            等价于
+            <%
+                var str = "<script>var s = 'HelloWorld!';<\/script>";
+            %>
+            <%:h=str %>
+
+    5. 自定义模板函数
+        
+        开发者可以根据自己的喜好，自定义模板内可使用的函数，如下：
+
+        <%
+            var str = "<script>var s = 'HelloWorld!';<\/script>";
+            encodeHTMLAndPrint(str);
+        %>
+
+        app.tpl(template, {}, {
+            fns : {
+                encodeHTMLAndPrint : 'function(s){print(encodeHTML(s))}'
+            }
+        });
+
+        在这里encodeHTMLAndPrint函数为开发者自定义函数，调用了内置函数print和encodeHTML输出一个转义好的字符串
+
+        注意：开发者尽量不要应用内置变量"__s"
+
+Good Luck
