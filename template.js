@@ -2,6 +2,7 @@ var app = {};
 
 /**
  * javascript template
+ * 基于有限状态自动机的前端模板，非正则
  * 
  * @author PengXing
  * @email px.pengxing@gmail.com
