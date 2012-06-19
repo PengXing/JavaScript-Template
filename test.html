@@ -39,6 +39,14 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
     %>
 </script>
 
+<script id="4" type="template">
+    <%:h=name %>
+    <%
+        var s = '<script>var xss = "";<\/script>';
+    %>
+    <%:h=s %>
+</script>
+
 <script>
     var Timer = function(){
         
@@ -57,7 +65,7 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
 </script>
 
 <script id="test">
-    var tplIds = ['1', '2', '3'];
+    var tplIds = ['1', '2', '3', '4'];
 
     var html = [];
     var timer = new Timer();

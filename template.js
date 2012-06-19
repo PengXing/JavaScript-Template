@@ -75,13 +75,13 @@ var app = {};
                                 status = INCODE;
                             } else {
                                 me.offset--;
-                                status = INTEXT
+                                status = INTEXT;
                             }
                         } else if(c === EOF){
                             status = DONE;
                             category = type.NONE;
                         } else {
-                            status = INTEXT
+                            status = INTEXT;
                         }
                         break;
                     case INCODE:
@@ -129,33 +129,60 @@ var app = {};
 
         me.parse = function(){
             var stmt,
-            code = '';
+            code = '',
+            lastType = 1; //0代表直接输出，1代表其他
+            /**
+             * 拼接代码，对连续输出进行优化，两个连续的输出语句会合并为一条语句
+             */
+            function concatCode(str, type){
+                switch(type){
+                    case 0 :
+                        if(lastType){
+                            code += '__s+=' + str;
+                        } else {
+                            code += '+' + str;
+                        }
+                        lastType = 0;
+                        break;
+                    default:
+                        if(!lastType){
+                            code += ';'
+                        }
+                        code += str;
+                        lastType = 1;
+                }
+            };
             while(stmt = me.getNextStmt()){
                 switch(stmt.type){
                     case type.CODE:
                         var flag = me.str[stmt.start + 2];
                         if(flag == '='){
-                            code += 'print(' + me.str.substring(stmt.start + 3, stmt.end - 2) + ');';
+                            concatCode(me.str.substring(stmt.start + 3, stmt.end - 2), 0);
                         } else if(flag == ':'){
                             flag = me.str[stmt.start + 3];
                             switch(flag){
                                 case 'u':
                                     if(me.str[stmt.start + 4] == '='){
-                                        code += 'print(encodeURIComponent(' + me.str.substring(stmt.start + 5, stmt.end - 2) + '));';
+                                        concatCode('encodeURIComponent(' + me.str.substring(stmt.start + 5, stmt.end - 2) + ')', 0);
                                     } else 
                                         error("Errors. Expect char: \'=\'");
                                     break;
-                                //可以再这里添加其他命令
+                                case 'h':
+                                    if(me.str[stmt.start + 4] == '='){
+                                        concatCode('encodeHTML(' + me.str.substring(stmt.start + 5, stmt.end - 2) + ')', 0);
+                                    } else 
+                                        error('Errors. Expect char: \'=\'');
+                                    break;
                             }
                         } else if(flag == '#'){
                             //注释
                             break;
                         } else {
-                            code += me.str.substring(stmt.start + 2, stmt.end - 2);
+                            concatCode(me.str.substring(stmt.start + 2, stmt.end - 2), 1);
                         }
                         break;
                     case type.TEXT:
-                        code += '__s+="' + me.str.substring(stmt.start, stmt.end) + '";';
+                        concatCode('"' + me.str.substring(stmt.start, stmt.end) + '"', 0);
                         break;
                     default:
                         error("Errors. Unsupported statement");
@@ -166,6 +193,22 @@ var app = {};
         };
 
     }
+
+    var innerFns = {
+        'encodeHTML' : [
+            'function(str){',
+                'return String(str)',
+                    '.replace(/&/g,"&amp;")',
+                    '.replace(/</g,"&lt;")',
+                    '.replace(/>/g,"&gt;")',
+                    '.replace(/"/g,"&quot;")',
+                    '.replace(/\'/g,"&#39;")',
+                    '.replace(/\\\\/g,"\\\\")',
+                    '.replace(/\\\//g,"\\\/")',
+            '}'
+        ].join(''),
+        'print' : 'function(s){__s+=s}'
+    };
 
     /**
      * @function 模板函数
@@ -181,12 +224,17 @@ var app = {};
         var inFns = '',
             key,
             value;
+        opt['fns'] = opt['fns'] || {};
+        for(key in innerFns){
+            value = innerFns[key];
+            opt['fns'][key] = opt['fns'][key] || value;
+        }
         for(key in opt['fns']){
             value = opt['fns'][key];
             value = 'var ' + key + '=' + value.replace(/[\r\t\n]/g, ' ') + ';';
             inFns += value;
         }
-        var fn = new Function('obj', 'var __s="",print=function(s){__s+=s};' + inFns + 'with(obj){' + str + '}return __s');
+        var fn = new Function('obj', 'var __s="";' + inFns + 'with(obj){' + str + '}return __s');
         return data ? fn(data) : fn;
     };
 
