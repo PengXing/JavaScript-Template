@@ -1,3 +1,10 @@
+TODO:
+  1. Optimize the compiled function by abandoning using keyword "with".
+
+  ( Every commit will be considered )
+  ( 欢迎任何人提交代码 )
+
+
 Feature:
   1. Support comment
     <%# comment %>
@@ -20,9 +27,6 @@ Feature:
   5. Good performance
 
   6. Support error tips
-
-TODO:
-  1. Optimize the compiled function without using keyword "with".
 
 使用方法：
 
