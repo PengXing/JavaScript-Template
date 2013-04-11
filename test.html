@@ -83,7 +83,7 @@ body{padding:5px;margin:0;font-size:12px;font-family:Consolas}
         var id = tplIds[i];
         var template = document.getElementById(id).innerHTML;
         timer.start();
-        html.push(app.tpl(template, {
+        html.push(tpl(template, {
             name: 'PengXing',
             company: 'baidu'
         }, {
