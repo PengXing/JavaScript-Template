@@ -18,7 +18,7 @@ Feature:
 
   4. Support developers custom template function
     var template = '<% output("custom function"); %>';
-    app.tpl(template, {}, {
+    window.tpl(template, {}, {
         fns : {
             output : 'function(str){__s += str}'
         }
@@ -105,7 +105,7 @@ Feature:
             encodeHTMLAndPrint(str);
         %>
 
-        app.tpl(template, {}, {
+        window.tpl(template, {}, {
             fns : {
                 encodeHTMLAndPrint : 'function(s){print(encodeHTML(s))}'
             }
